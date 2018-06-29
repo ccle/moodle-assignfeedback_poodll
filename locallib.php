@@ -88,6 +88,7 @@ class assign_feedback_poodll extends assign_feedback_plugin {
         if($recordertype==constants::M_REPLYVOICE){
             $recordertype=constants::M_REPLYMP3VOICE;
         }
+
 		$boardsize = $this->get_config('boardsize');
 		$downloadsok = $this->get_config('downloadsok');
 		
@@ -112,7 +113,10 @@ class assign_feedback_poodll extends assign_feedback_plugin {
 	$mform->addElement('select', constants::M_COMPONENT . '_recordertype', get_string("recordertype", constants::M_COMPONENT), $recorderoptions);
         //$mform->addHelpButton(constants::M_COMPONENT . '_recordertype', get_string('onlinepoodll', ASSIGNSUBMISSION_ONLINEPOODLL_COMPONENT), ASSIGNSUBMISSION_ONLINEPOODLL_COMPONENT);
     $mform->setDefault(constants::M_COMPONENT . '_recordertype', $recordertype);
-	$mform->disabledIf(constants::M_COMPONENT . '_recordertype', constants::M_COMPONENT . '_enabled', 'notchecked');
+	// START UCLA MOD: CCLE-7189 - Converted js functionality to Jquery for simplify assignment settings.
+	//$mform->disabledIf(constants::M_COMPONENT . '_recordertype', constants::M_COMPONENT . '_enabled', 'notchecked');
+	$mform->hideIf(constants::M_COMPONENT . '_recordertype', constants::M_COMPONENT . '_enabled', 'notchecked');
+	// END UCLA MOD: CCLE-7189.
 	
 	//Are students and teachers shown the download link for the feedback recording
 	$yesno_options = array( 1 => get_string("yes", constants::M_COMPONENT),
@@ -120,6 +124,10 @@ class assign_feedback_poodll extends assign_feedback_plugin {
 	$mform->addElement('select', constants::M_COMPONENT . '_downloadsok', get_string('downloadsok', constants::M_COMPONENT), $yesno_options);
 	$mform->setDefault(constants::M_COMPONENT . '_downloadsok', $downloadsok);
 		
+	// START UCLA MOD: CCLE-7189 - Converted js functionality to Jquery for simplify assignment settings.
+	$mform->hideIf(constants::M_COMPONENT . '_downloadsok', constants::M_COMPONENT . '_enabled', 'notchecked');
+	// END UCLA MOD: CCLE-7189.
+
 	//If whiteboard not allowed, not much point showing boardsizes
 		if(array_search(constants::M_REPLYWHITEBOARD,$allowed_recorders)!==false){
 				//board sizes for the whiteboard feedback
@@ -134,8 +142,12 @@ class assign_feedback_poodll extends assign_feedback_plugin {
 				$mform->addElement('select', constants::M_COMPONENT . '_boardsize',
 						get_string('boardsize', constants::M_COMPONENT), $boardsizes);
 				$mform->setDefault(constants::M_COMPONENT . '_boardsize', $boardsize);
-				$mform->disabledIf(constants::M_COMPONENT . '_boardsize', constants::M_COMPONENT . '_enabled', 'eq', 0);
-					$mform->disabledIf(constants::M_COMPONENT . '_boardsize', constants::M_COMPONENT . '_recordertype', 'ne', constants::M_REPLYWHITEBOARD );
+				// START UCLA MOD: CCLE-7189 - Converted js functionality to Jquery for simplify assignment settings
+				//$mform->disabledIf(constants::M_COMPONENT . '_boardsize', constants::M_COMPONENT . '_enabled', 'eq', 0);
+				//	$mform->disabledIf(constants::M_COMPONENT . '_boardsize', constants::M_COMPONENT . '_recordertype', 'ne', constants::M_REPLYWHITEBOARD );
+				$mform->hideIf(constants::M_COMPONENT . '_boardsize', constants::M_COMPONENT . '_enabled', 'notchecked');
+				$mform->hideIf(constants::M_COMPONENT . '_boardsize', constants::M_COMPONENT . '_recordertype', 'ne', constants::M_REPLYWHITEBOARD );
+				// END UCLA MOD: CCLE-7189.
 		}//end of if whiteboard
 		
     }//end of function
