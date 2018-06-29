@@ -105,55 +105,61 @@ class assign_feedback_poodll extends assign_feedback_plugin {
         if($recordertype==FP_REPLYVOICE){
             $recordertype=FP_REPLYMP3VOICE;
         }
-		$boardsize = $this->get_config('boardsize');
-		$downloadsok = $this->get_config('downloadsok');
-		
-		//get allowed recorders from admin settings
-		$allowed_recorders = get_config('assignfeedback_poodll', 'allowedrecorders');
-		$allowed_recorders  = explode(',',$allowed_recorders);
-		$recorderoptions = array();
-		if(array_search(FP_REPLYMP3VOICE,$allowed_recorders)!==false || array_search(FP_REPLYVOICE,$allowed_recorders)!==false){
-			$recorderoptions[FP_REPLYMP3VOICE] = get_string("replymp3voice", "assignfeedback_poodll");
-		}
-		if(array_search(FP_REPLYVIDEO ,$allowed_recorders)!==false){
-			$recorderoptions[FP_REPLYVIDEO ] = get_string("replyvideo", "assignfeedback_poodll");
-		}
-		if(array_search(FP_REPLYWHITEBOARD,$allowed_recorders)!==false){
-			$recorderoptions[FP_REPLYWHITEBOARD ] = get_string("replywhiteboard", "assignfeedback_poodll");
-		}
-		if(array_search(FP_REPLYSNAPSHOT,$allowed_recorders)!==false){
-			$recorderoptions[FP_REPLYSNAPSHOT] = get_string("replysnapshot", "assignfeedback_poodll");
-		}
-		
-	
+        $boardsize = $this->get_config('boardsize');
+        $downloadsok = $this->get_config('downloadsok');
+
+        //get allowed recorders from admin settings
+        $allowed_recorders = get_config('assignfeedback_poodll', 'allowedrecorders');
+        $allowed_recorders  = explode(',',$allowed_recorders);
+        $recorderoptions = array();
+        if(array_search(FP_REPLYMP3VOICE,$allowed_recorders)!==false || array_search(FP_REPLYVOICE,$allowed_recorders)!==false){
+                $recorderoptions[FP_REPLYMP3VOICE] = get_string("replymp3voice", "assignfeedback_poodll");
+        }
+        if(array_search(FP_REPLYVIDEO ,$allowed_recorders)!==false){
+                $recorderoptions[FP_REPLYVIDEO ] = get_string("replyvideo", "assignfeedback_poodll");
+        }
+        if(array_search(FP_REPLYWHITEBOARD,$allowed_recorders)!==false){
+                $recorderoptions[FP_REPLYWHITEBOARD ] = get_string("replywhiteboard", "assignfeedback_poodll");
+        }
+        if(array_search(FP_REPLYSNAPSHOT,$allowed_recorders)!==false){
+                $recorderoptions[FP_REPLYSNAPSHOT] = get_string("replysnapshot", "assignfeedback_poodll");
+        }
+
 	$mform->addElement('select', 'assignfeedback_poodll_recordertype', get_string("recordertype", "assignfeedback_poodll"), $recorderoptions);
         //$mform->addHelpButton('assignfeedback_poodll_recordertype', get_string('onlinepoodll', ASSIGNSUBMISSION_ONLINEPOODLL_COMPONENT), ASSIGNSUBMISSION_ONLINEPOODLL_COMPONENT);
-    $mform->setDefault('assignfeedback_poodll_recordertype', $recordertype);
-	$mform->disabledIf('assignfeedback_poodll_recordertype', 'assignfeedback_poodll_enabled', 'eq', 0);
-	
+        $mform->setDefault('assignfeedback_poodll_recordertype', $recordertype);
+        // START UCLA MOD: CCLE-7189 - Converted js functionality to Jquery for simplify assignment settings
+	// $mform->disabledIf('assignfeedback_poodll_recordertype', 'assignfeedback_poodll_enabled', 'eq', 0);
+	$mform->hideIf('assignfeedback_poodll_recordertype', 'assignfeedback_poodll_enabled', 'notchecked');
+	// END UCLA MOD: CCLE-7189
 	//Are students and teachers shown the download link for the feedback recording
 	$yesno_options = array( 1 => get_string("yes", "assignfeedback_poodll"), 
 				0 => get_string("no", "assignfeedback_poodll"));
 	$mform->addElement('select', 'assignfeedback_poodll_downloadsok', get_string('downloadsok', 'assignfeedback_poodll'), $yesno_options);
 	$mform->setDefault('assignfeedback_poodll_downloadsok', $downloadsok);
+        $mform->hideIf('assignfeedback_poodll_downloadsok', 'assignfeedback_poodll_enabled', 'notchecked');
 		
 	//If whiteboard not allowed, not much point showing boardsizes
-		if(array_search(FP_REPLYWHITEBOARD,$allowed_recorders)!==false){
-				//board sizes for the whiteboard feedback
-				$boardsizes = array(
-						'320x320' => '320x320',
-						'400x600' => '400x600',
-						'500x500' => '500x500',
-						'600x400' => '600x400',
-						'600x800' => '600x800',
-						'800x600' => '800x600'
-						);
-				$mform->addElement('select', 'assignfeedback_poodll_boardsize',
-						get_string('boardsize', 'assignfeedback_poodll'), $boardsizes);
-				$mform->setDefault('assignfeedback_poodll_boardsize', $boardsize);
-				$mform->disabledIf('assignfeedback_poodll_boardsize', 'assignfeedback_poodll_enabled', 'eq', 0);
-					$mform->disabledIf('assignfeedback_poodll_boardsize', 'assignfeedback_poodll_recordertype', 'ne', FP_REPLYWHITEBOARD );
-		}//end of if whiteboard
+        if(array_search(FP_REPLYWHITEBOARD,$allowed_recorders)!==false){
+            //board sizes for the whiteboard feedback
+            $boardsizes = array(
+                            '320x320' => '320x320',
+                            '400x600' => '400x600',
+                            '500x500' => '500x500',
+                            '600x400' => '600x400',
+                            '600x800' => '600x800',
+                            '800x600' => '800x600'
+                            );
+            $mform->addElement('select', 'assignfeedback_poodll_boardsize',
+                            get_string('boardsize', 'assignfeedback_poodll'), $boardsizes);
+            $mform->setDefault('assignfeedback_poodll_boardsize', $boardsize);
+            // START UCLA MOD: CCLE-7189 - Converted js functionality to Jquery for simplify assignment settings
+            // $mform->disabledIf('assignfeedback_poodll_boardsize', 'assignfeedback_poodll_enabled', 'eq', 0);
+            // $mform->disabledIf('assignfeedback_poodll_boardsize', 'assignfeedback_poodll_recordertype', 'ne', FP_REPLYWHITEBOARD );
+            $mform->hideIf('assignfeedback_poodll_boardsize', 'assignfeedback_poodll_enabled', 'notchecked');
+            $mform->hideIf('assignfeedback_poodll_boardsize', 'assignfeedback_poodll_recordertype', 'ne', FP_REPLYWHITEBOARD );
+            // END UCLA MOD: CCLE-7189
+        }//end of if whiteboard
 		
     }//end of function
     
